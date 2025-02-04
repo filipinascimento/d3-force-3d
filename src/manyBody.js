@@ -13,10 +13,10 @@ export default function() {
       alpha,
       // Optimizations from https://github.com/twosixlabs/d3-force-reuse/blob/master/src/manyBodyReuse.js
       // In progress...
-      iter = 0,
-      tree,
-      updateClosure, 
-      updateBH,
+      // iter = 0,
+      // tree,
+      // updateClosure, 
+      // updateBH,
       strength = constant(-30),
       exponent = 1,
       strengths,
@@ -24,15 +24,15 @@ export default function() {
       distanceMax2 = Infinity,
       theta2 = 0.81;
 
-  updateClosure = function () {
-    return function (i) {
-      if (i % 13 === 0) {
-        return true;
-      } else {
-        return false;
-      }
-    };
-  }
+  // updateClosure = function () {
+  //   return function (i) {
+  //     if (i % 13 === 0) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   };
+  // }
     
   function force(_) {
     var i,

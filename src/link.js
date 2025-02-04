@@ -87,7 +87,7 @@ export default function(links) {
       count[link.target.index] = (count[link.target.index] || 0) + 1;
     }
 
-    for (i = 0, bias = new Array(m); i < m; ++i) {
+    for (i = 0; i < m; ++i) {
       link = links[i];
     }
 

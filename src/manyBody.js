@@ -11,12 +11,29 @@ export default function() {
       node,
       random,
       alpha,
+      // Optimizations from https://github.com/twosixlabs/d3-force-reuse/blob/master/src/manyBodyReuse.js
+      // In progress...
+      iter = 0,
+      tree,
+      updateClosure, 
+      updateBH,
       strength = constant(-30),
+      exponent = 1,
       strengths,
       distanceMin2 = 1,
       distanceMax2 = Infinity,
       theta2 = 0.81;
 
+  updateClosure = function () {
+    return function (i) {
+      if (i % 13 === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+  }
+    
   function force(_) {
     var i,
         n = nodes.length,
@@ -86,9 +103,17 @@ export default function() {
         if (nDim > 1 && y === 0) y = jiggle(random), l += y * y;
         if (nDim > 2 && z === 0) z = jiggle(random), l += z * z;
         if (l < distanceMin2) l = Math.sqrt(distanceMin2 * l);
-        node.vx += x * treeNode.value * alpha / l;
-        if (nDim > 1) { node.vy += y * treeNode.value * alpha / l; }
-        if (nDim > 2) { node.vz += z * treeNode.value * alpha / l; }
+        let factor = l;
+        if(exponent == 1){
+          // nothing...
+        }else if(exponent == 2){
+          factor = l * Math.sqrt(l);
+        }else{
+          factor = Math.pow(l, (exponent + 1) / 2);
+        }
+        node.vx += x * treeNode.value * alpha / factor;
+        if (nDim > 1) { node.vy += y * treeNode.value * alpha / factor; }
+        if (nDim > 2) { node.vz += z * treeNode.value * alpha / factor; }
       }
       return true;
     }
@@ -104,8 +129,17 @@ export default function() {
       if (l < distanceMin2) l = Math.sqrt(distanceMin2 * l);
     }
 
+    let factor = l;
+    if(exponent == 1){
+      // nothing...
+    }else if(exponent == 2){
+      factor = l * Math.sqrt(l);
+    }else{
+      factor = Math.pow(l, (exponent + 1) / 2);
+    }
+
     do if (treeNode.data !== node) {
-      w = strengths[treeNode.data.index] * alpha / l;
+      w = strengths[treeNode.data.index] * alpha / factor;
       node.vx += x * w;
       if (nDim > 1) { node.vy += y * w; }
       if (nDim > 2) { node.vz += z * w; }
@@ -122,6 +156,10 @@ export default function() {
   force.strength = function(_) {
     return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), initialize(), force) : strength;
   };
+
+  force.exponent = function(_) {
+    return arguments.length ? (exponent = +_, force) : exponent;
+  }
 
   force.distanceMin = function(_) {
     return arguments.length ? (distanceMin2 = _ * _, force) : Math.sqrt(distanceMin2);

@@ -15,12 +15,14 @@ export default function(links) {
   var id = index,
       strength = defaultStrength,
       strengths,
+      bias = defaultBias,
+      biases,
       distance = constant(30),
+      exponent = 1,
       distances,
       nodes,
       nDim,
       count,
-      bias,
       random,
       iterations = 1;
 
@@ -30,18 +32,34 @@ export default function(links) {
     return 1 / Math.min(count[link.source.index], count[link.target.index]);
   }
 
+  function defaultBias(link) {
+    // bias[i] = count[link.source.index] / (count[link.source.index] + count[link.target.index])
+    return count[link.source.index] / (count[link.source.index] + count[link.target.index]);
+  }
+
+
   function force(alpha) {
     for (var k = 0, n = links.length; k < iterations; ++k) {
       for (var i = 0, link, source, target, x = 0, y = 0, z = 0, l, b; i < n; ++i) {
         link = links[i], source = link.source, target = link.target;
         x = target.x + target.vx - source.x - source.vx || jiggle(random);
+        
         if (nDim > 1) { y = target.y + target.vy - source.y - source.vy || jiggle(random); }
         if (nDim > 2) { z = target.z + target.vz - source.z - source.vz || jiggle(random); }
         l = Math.sqrt(x * x + y * y + z * z);
-        l = (l - distances[i]) / l * alpha * strengths[i];
+        
+        let lexp = (l - distances[i]);
+        if(exponent == 1){
+          // nothing...
+        }if(exponent == 2){
+          lexp = lexp * Math.abs(lexp);
+        }else{
+          lexp = lexp = Math.sign(lexp) * Math.pow(Math.abs(lexp), exponent);
+        }
+        l =  lexp / l * alpha * strengths[i];
         x *= l, y *= l, z *= l;
 
-        target.vx -= x * (b = bias[i]);
+        target.vx -= x * (b = biases[i]);
         if (nDim > 1) { target.vy -= y * b; }
         if (nDim > 2) { target.vz -= z * b; }
 
@@ -70,11 +88,12 @@ export default function(links) {
     }
 
     for (i = 0, bias = new Array(m); i < m; ++i) {
-      link = links[i], bias[i] = count[link.source.index] / (count[link.source.index] + count[link.target.index]);
+      link = links[i];
     }
 
     strengths = new Array(m), initializeStrength();
     distances = new Array(m), initializeDistance();
+    biases = new Array(m), initializeBias();
   }
 
   function initializeStrength() {
@@ -82,6 +101,13 @@ export default function(links) {
 
     for (var i = 0, n = links.length; i < n; ++i) {
       strengths[i] = +strength(links[i], i, links);
+    }
+  }
+  
+  function initializeBias() {
+    if (!nodes) return;
+    for (var i = 0, n = links.length; i < n; ++i) {
+      biases[i] = +bias(links[i], i, links);
     }
   }
 
@@ -114,6 +140,14 @@ export default function(links) {
 
   force.strength = function(_) {
     return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), initializeStrength(), force) : strength;
+  };
+
+  force.bias = function(_) {
+    return arguments.length ? (bias = typeof _ === "function" ? _ : constant(+_), initializeBias(), force) : bias;
+  };
+
+  force.exponent = function(_) {
+    return arguments.length ? (exponent = +_, force) : exponent;
   };
 
   force.distance = function(_) {

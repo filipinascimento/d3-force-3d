@@ -512,17 +512,17 @@ Creates a new positioning force towards a circle or sphere of the specified [*ra
 
 If *strength* is specified, sets the strength accessor to the specified number or function, re-evaluates the strength accessor for each node, and returns this force. The *strength* determines how much to increment the node’s *x*-, *y* and *z*-velocity. For example, a value of 0.1 indicates that the node should move a tenth of the way from its current position to the closest point on the sphere perimeter with each application. Higher values moves nodes more quickly to the target position, often at the expense of other forces or constraints. A value outside the range [0,1] is not recommended.
 
-If *strength* is not specified, returns the current strength accessor, which defaults to:  
+If *strength* is not specified, returns the current strength accessor, which defaults to:
 
 ```js
- function strength() { 
-  return 0.1; 
-} 
+function strength() {
+  return 0.1;
+}
 ```
 
-The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.  
+The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.
 
-<a name="radial_radius" href="#radial_radius">#</a> <i>radial</i>.<b>radius</b>([<i>radius</i>]) · [Source](https://github.com/vasturiano/d3-force-3d/blob/master/src/radial.js)  
+<a name="radial_radius" href="#radial_radius">#</a> <i>radial</i>.<b>radius</b>([<i>radius</i>]) · [Source](https://github.com/vasturiano/d3-force-3d/blob/master/src/radial.js)
 
 If *radius* is specified, sets the circle *radius* to the specified number or function, re-evaluates the *radius* accessor for each node, and returns this force. If *radius* is not specified, returns the current *radius* accessor.
 
@@ -536,9 +536,9 @@ If *x* is specified, sets the *x*-coordinate of the sphere center to the specifi
 
 If *y* is specified, sets the *y*-coordinate of the sphere center to the specified number and returns this force. If *y* is not specified, returns the current *y*-coordinate of the center, which defaults to zero.
 
-<a name="radial_z" href="#radial_z">#</a> <i>radial</i>.<b>z</b>([<i>z</i>]) · [Source](https://github.com/vasturiano/d3-force-3d/blob/master/src/radial.js)  
+<a name="radial_z" href="#radial_z">#</a> <i>radial</i>.<b>z</b>([<i>z</i>]) · [Source](https://github.com/vasturiano/d3-force-3d/blob/master/src/radial.js)
 
-If *z* is specified, sets the *z*-coordinate of the sphere center to the specified number and returns this force. If *z* is not specified, returns the current *z*-coordinate of the center, which defaults to zero. 
+If *z* is specified, sets the *z*-coordinate of the sphere center to the specified number and returns this force. If *z* is not specified, returns the current *z*-coordinate of the center, which defaults to zero.
 
 
 [npm-img]: https://img.shields.io/npm/v/d3-force-3d.svg
